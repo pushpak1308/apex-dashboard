@@ -256,7 +256,7 @@ const BillSection = () => {
       headerName: "GST Required",
       width: 130,
       valueGetter: ({ row }) => {
-        if (typeof row.gstRequired === "string") {
+        if (typeof row?.gstRequired === "string") {
           const val = row.gstRequired.trim().toLowerCase();
           if (val === "yes") return "Yes";
           if (val === "no") return "No";
@@ -316,7 +316,7 @@ const BillSection = () => {
             <EditIcon />
           </IconButton>
           <IconButton
-            onClick={() => handleDelete(params.row.expenseId || params.row.id)}
+            onClick={() => handleDelete(params?.row?.expenseId || params?.row?.id)}
             size="small"
             sx={{
               color: "#F44336",
@@ -339,10 +339,10 @@ const BillSection = () => {
   const rows = filteredBills.map((b, i) => ({
     ...b,
     id: i + 1,
-    projectName: b.project?.projectName || "",
-    personName: b.person?.personName || "",
-    categoryName: b.category?.categoryName || "",
-    subcategoryName: b.subcategory?.subcategoryName || "",
+    projectName: b?.project?.projectName || "",
+    personName: b?.person?.personName || "",
+    categoryName: b?.category?.categoryName || "",
+    subcategoryName: b?.subcategory?.subcategoryName || "",
     gstRequired: b.gstRequired,
   }));
 
