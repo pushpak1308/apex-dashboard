@@ -226,13 +226,12 @@ const BillSection = () => {
       field: "projectName",
       headerName: "Project",
       width: 150,
-      valueGetter: ({ row }) => row?.project?.projectName || "",
+      valueGetter: ({ rows }) => rows?.project?.projectName || "",
     },
     {
       field: "personName",
       headerName: "Person",
       width: 150,
-      valueGetter: ({ row }) => row?.person?.personName || "",
     },
     {
       field: "categoryName",
@@ -316,7 +315,9 @@ const BillSection = () => {
             <EditIcon />
           </IconButton>
           <IconButton
-            onClick={() => handleDelete(params?.row?.expenseId || params?.row?.id)}
+            onClick={() =>
+              handleDelete(params?.row?.expenseId || params?.row?.id)
+            }
             size="small"
             sx={{
               color: "#F44336",
