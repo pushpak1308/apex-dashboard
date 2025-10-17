@@ -81,13 +81,17 @@ const AddExpense = () => {
   useEffect(() => {
     if (formData.projectId)
       axios
-        .get(`https://apexconstruction.onrender.com/api/groups/byProject/${formData.projectId}`)
+        .get(
+          `https://apexconstruction.onrender.com/api/groups/byProject/${formData.projectId}`
+        )
         .then((res) => setGroups(res.data));
     else setGroups([]);
 
     if (formData.groupId)
       axios
-        .get(`https://apexconstruction.onrender.com/api/categories/byGroup/${formData.groupId}`)
+        .get(
+          `https://apexconstruction.onrender.com/api/categories/byGroup/${formData.groupId}`
+        )
         .then((res) => setCategories(res.data));
     else setCategories([]);
 
@@ -150,7 +154,8 @@ const AddExpense = () => {
       project: "https://apexconstruction.onrender.com/api/projects/add",
       group: "https://apexconstruction.onrender.com/api/groups/add",
       category: "https://apexconstruction.onrender.com/api/categories/add",
-      subcategory: "https://apexconstruction.onrender.com/api/subcategories/add",
+      subcategory:
+        "https://apexconstruction.onrender.com/api/subcategories/add",
       person: "https://apexconstruction.onrender.com/api/persons/add",
     };
 
@@ -270,12 +275,17 @@ const AddExpense = () => {
         alert("Expense updated successfully ✅");
       } else {
         // POST request for add
-        await axios.post("https://apexconstruction.onrender.com/api/expenses/add", payload, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+        await axios.post(
+          "https://apexconstruction.onrender.com/api/expenses/add",
+          payload,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          }
+        );
         alert("Expense added successfully ✅");
       }
       navigate("/bills");
+      setShowSuccess("");
     } catch (err) {
       alert("Error saving expense ❌");
     }
