@@ -226,7 +226,6 @@ const BillSection = () => {
       field: "projectName",
       headerName: "Project",
       width: 150,
-      valueGetter: ({ rows }) => rows?.project?.projectName || "",
     },
     {
       field: "personName",
@@ -237,13 +236,11 @@ const BillSection = () => {
       field: "categoryName",
       headerName: "Category",
       width: 150,
-      valueGetter: ({ row }) => row?.category?.categoryName || "",
     },
     {
       field: "subcategoryName",
       headerName: "Subcategory",
       width: 150,
-      valueGetter: ({ row }) => row?.subcategory?.subcategoryName || "",
     },
     { field: "vendor", headerName: "Vendor", width: 180 },
     { field: "description", headerName: "Description", flex: 1, minWidth: 250 },
@@ -254,16 +251,6 @@ const BillSection = () => {
       field: "gstRequired",
       headerName: "GST Required",
       width: 130,
-      valueGetter: ({ row }) => {
-        if (typeof row?.gstRequired === "string") {
-          const val = row.gstRequired.trim().toLowerCase();
-          if (val === "yes") return "Yes";
-          if (val === "no") return "No";
-          if (val === "partially") return "Partially";
-          return row.gstRequired;
-        }
-        return "";
-      },
     },
     { field: "totalAmount", headerName: "Total (₹)", width: 150 },
     { field: "paymentMethod", headerName: "Payment", width: 150 },
