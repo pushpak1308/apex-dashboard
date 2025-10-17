@@ -288,7 +288,7 @@ const BillSection = () => {
         ) : (
           "—"
         ),
-      valueGetter: (params) => params.value,
+      valueGetter: (params) => params?.value,
     },
     {
       field: "actions",
