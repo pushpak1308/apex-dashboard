@@ -20,7 +20,7 @@ const Dashboard = () => {
       params.append("end", filters.endDate.toISOString().split("T")[0]);
 
     axios
-      .get(`http://localhost:8000/api/dashboard/summary?${params}`)
+      .get(`https://apexconstruction.onrender.com/api/dashboard/summary?${params}`)
       .then((res) => setData(res.data))
       .catch((err) => console.error("Error loading dashboard:", err));
   };

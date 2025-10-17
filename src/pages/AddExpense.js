@@ -70,10 +70,10 @@ const AddExpense = () => {
   // Load base data on mount
   useEffect(() => {
     axios
-      .get("http://localhost:8000/api/projects/all")
+      .get("https://apexconstruction.onrender.com/api/projects/all")
       .then((res) => setProjects(res.data));
     axios
-      .get("http://localhost:8000/api/persons/all")
+      .get("https://apexconstruction.onrender.com/api/persons/all")
       .then((res) => setPersons(res.data));
   }, []);
 
@@ -81,20 +81,20 @@ const AddExpense = () => {
   useEffect(() => {
     if (formData.projectId)
       axios
-        .get(`http://localhost:8000/api/groups/byProject/${formData.projectId}`)
+        .get(`https://apexconstruction.onrender.com/api/groups/byProject/${formData.projectId}`)
         .then((res) => setGroups(res.data));
     else setGroups([]);
 
     if (formData.groupId)
       axios
-        .get(`http://localhost:8000/api/categories/byGroup/${formData.groupId}`)
+        .get(`https://apexconstruction.onrender.com/api/categories/byGroup/${formData.groupId}`)
         .then((res) => setCategories(res.data));
     else setCategories([]);
 
     if (formData.categoryId)
       axios
         .get(
-          `http://localhost:8000/api/subcategories/byCategory/${formData.categoryId}`
+          `https://apexconstruction.onrender.com/api/subcategories/byCategory/${formData.categoryId}`
         )
         .then((res) => setSubcategories(res.data));
     else setSubcategories([]);
@@ -147,11 +147,11 @@ const AddExpense = () => {
 
     // URL map for adding new
     const urlMap = {
-      project: "http://localhost:8000/api/projects/add",
-      group: "http://localhost:8000/api/groups/add",
-      category: "http://localhost:8000/api/categories/add",
-      subcategory: "http://localhost:8000/api/subcategories/add",
-      person: "http://localhost:8000/api/persons/add",
+      project: "https://apexconstruction.onrender.com/api/projects/add",
+      group: "https://apexconstruction.onrender.com/api/groups/add",
+      category: "https://apexconstruction.onrender.com/api/categories/add",
+      subcategory: "https://apexconstruction.onrender.com/api/subcategories/add",
+      person: "https://apexconstruction.onrender.com/api/persons/add",
     };
 
     if (!urlMap[dialogType]) {
@@ -206,14 +206,14 @@ const AddExpense = () => {
       switch (dialogType) {
         case "project":
           axios
-            .get("http://localhost:8000/api/projects/all")
+            .get("https://apexconstruction.onrender.com/api/projects/all")
             .then((r) => setProjects(r.data));
           break;
         case "group":
           if (formData.projectId)
             axios
               .get(
-                `http://localhost:8000/api/groups/byProject/${formData.projectId}`
+                `https://apexconstruction.onrender.com/api/groups/byProject/${formData.projectId}`
               )
               .then((r) => setGroups(r.data));
           break;
@@ -221,7 +221,7 @@ const AddExpense = () => {
           if (formData.groupId)
             axios
               .get(
-                `http://localhost:8000/api/categories/byGroup/${formData.groupId}`
+                `https://apexconstruction.onrender.com/api/categories/byGroup/${formData.groupId}`
               )
               .then((r) => setCategories(r.data));
           break;
@@ -229,13 +229,13 @@ const AddExpense = () => {
           if (formData.categoryId)
             axios
               .get(
-                `http://localhost:8000/api/subcategories/byCategory/${formData.categoryId}`
+                `https://apexconstruction.onrender.com/api/subcategories/byCategory/${formData.categoryId}`
               )
               .then((r) => setSubcategories(r.data));
           break;
         case "person":
           axios
-            .get("http://localhost:8000/api/persons/all")
+            .get("https://apexconstruction.onrender.com/api/persons/all")
             .then((r) => setPersons(r.data));
           break;
         default:
@@ -261,7 +261,7 @@ const AddExpense = () => {
       if (expenseToEdit) {
         // PUT request for update
         await axios.put(
-          `http://localhost:8000/api/expenses/update/${expenseToEdit.expenseId}`,
+          `https://apexconstruction.onrender.com/api/expenses/update/${expenseToEdit.expenseId}`,
           payload,
           {
             headers: { "Content-Type": "multipart/form-data" },
@@ -270,7 +270,7 @@ const AddExpense = () => {
         alert("Expense updated successfully ✅");
       } else {
         // POST request for add
-        await axios.post("http://localhost:8000/api/expenses/add", payload, {
+        await axios.post("https://apexconstruction.onrender.com/api/expenses/add", payload, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         alert("Expense added successfully ✅");

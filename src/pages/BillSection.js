@@ -89,15 +89,15 @@ const BillSection = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get("http://localhost:8000/api/expenses/all").then((res) => {
+    axios.get("https://apexconstruction.onrender.com/api/expenses/all").then((res) => {
       setBills(res.data);
       setFilteredBills(res.data);
     });
     axios
-      .get("http://localhost:8000/api/projects/all")
+      .get("https://apexconstruction.onrender.com/api/projects/all")
       .then((res) => setProjects(res.data));
     axios
-      .get("http://localhost:8000/api/persons/all")
+      .get("https://apexconstruction.onrender.com/api/persons/all")
       .then((res) => setPersons(res.data));
   }, []);
 
@@ -105,7 +105,7 @@ const BillSection = () => {
     if (selectedProjects.length === 1) {
       axios
         .get(
-          `http://localhost:8000/api/categories/byProject/${selectedProjects[0]}`
+          `https://apexconstruction.onrender.com/api/categories/byProject/${selectedProjects[0]}`
         )
         .then((res) => setCategories(res.data));
     } else if (selectedProjects.length === 0) {
@@ -117,7 +117,7 @@ const BillSection = () => {
     if (selectedCategories.length === 1) {
       axios
         .get(
-          `http://localhost:8000/api/subcategories/byCategory/${selectedCategories[0]}`
+          `https://apexconstruction.onrender.com/api/subcategories/byCategory/${selectedCategories[0]}`
         )
         .then((res) => setSubcategories(res.data));
     } else if (selectedCategories.length === 0) {
@@ -181,7 +181,7 @@ const BillSection = () => {
   const handleDownload = (billFileName) => {
     if (!billFileName) return alert("No bill file available ❌");
     const link = document.createElement("a");
-    link.href = `http://localhost:8000/api/expenses/files/${billFileName}`;
+    link.href = `https://apexconstruction.onrender.com/api/expenses/files/${billFileName}`;
     link.download = billFileName;
     document.body.appendChild(link);
     link.click();
@@ -195,7 +195,7 @@ const BillSection = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this expense?")) {
       try {
-        await axios.delete(`http://localhost:8000/api/expenses/delete/${id}`);
+        await axios.delete(`https://apexconstruction.onrender.com/api/expenses/delete/${id}`);
         alert("Expense deleted successfully ✅");
         setBills((prev) =>
           prev.filter((b) => b.expenseId !== id && b.id !== id)
