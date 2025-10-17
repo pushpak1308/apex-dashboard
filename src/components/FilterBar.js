@@ -36,7 +36,7 @@ const FilterBar = ({ onFilterChange }) => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8000/api/projects/all")
+      .get("https://apexconstruction.onrender.com/api/projects/all")
       .then((res) => setProjects(res.data));
   }, []);
 
@@ -50,14 +50,14 @@ const FilterBar = ({ onFilterChange }) => {
   useEffect(() => {
     if (filters.project)
       axios
-        .get(`http://localhost:8000/api/groups/byProject/${filters.project}`)
+        .get(`https://apexconstruction.onrender.com/api/groups/byProject/${filters.project}`)
         .then((res) => setGroups(res.data));
   }, [filters.project]);
 
   useEffect(() => {
     if (filters.group)
       axios
-        .get(`http://localhost:8000/api/categories/byGroup/${filters.group}`)
+        .get(`https://apexconstruction.onrender.com/api/categories/byGroup/${filters.group}`)
         .then((res) => setCategories(res.data));
   }, [filters.group]);
 
