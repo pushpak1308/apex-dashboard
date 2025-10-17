@@ -1,24 +1,45 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Box, Toolbar } from "@mui/material";
+import Sidebar from "./components/Sidebar";
+import Navbar from "./components/Navbar";
+import AddExpense from "./pages/AddExpense";
+import Dashboard from "./pages/Dashboard";
+import BillSection from "./pages/BillSection";
 
 function App() {
+  const drawerWidth = 240;
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <Router>
+      <Box sx={{ display: "flex" }}>
+        {/* Sidebar */}
+        <Sidebar />
+
+        {/* Main Content */}
+        <Box
+          component="main"
+          sx={{
+            flexGrow: 1,
+            bgcolor: "#F3F4F6",
+            p: 3,
+            width: { sm: `calc(100% - ${drawerWidth}px)` },
+          }}
         >
-          Learn React
-        </a>
-      </header>
-    </div>
+          {/* Navbar */}
+          <Navbar />
+          {/* Add some space for the Drawer top */}
+          <Toolbar />
+
+          {/* Routes */}
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/add-expense" element={<AddExpense />} />
+            <Route path="/bills" element={<BillSection />} />{" "}
+            {/* ✅ New Route */}
+          </Routes>
+        </Box>
+      </Box>
+    </Router>
   );
 }
 
