@@ -20,7 +20,7 @@ import FilterListIcon from "@mui/icons-material/FilterList";
 import CloseIcon from "@mui/icons-material/Close";
 
 const FilterBar = ({ onFilterChange }) => {
-  const [projects, setProjects] = useState([]);
+  const [project, setProject] = useState([]);
   const [groups, setGroups] = useState([]);
   const [categories, setCategories] = useState([]);
 
@@ -37,7 +37,7 @@ const FilterBar = ({ onFilterChange }) => {
   useEffect(() => {
     axios
       .get("https://apexconstruction.onrender.com/api/projects/all")
-      .then((res) => setProjects(res.data));
+      .then((res) => setProject(res?.data));
   }, []);
 
   const handleChange = (e) =>
@@ -51,14 +51,14 @@ const FilterBar = ({ onFilterChange }) => {
     if (filters.project)
       axios
         .get(`https://apexconstruction.onrender.com/api/groups/byProject/${filters.project}`)
-        .then((res) => setGroups(res.data));
+        .then((res) => setGroups(res?.data));
   }, [filters.project]);
 
   useEffect(() => {
     if (filters.group)
       axios
         .get(`https://apexconstruction.onrender.com/api/categories/byGroup/${filters.group}`)
-        .then((res) => setCategories(res.data));
+        .then((res) => setCategories(res?.data));
   }, [filters.group]);
 
   return (
@@ -105,7 +105,7 @@ const FilterBar = ({ onFilterChange }) => {
                 onChange={handleChange}
                 sx={{ minWidth: "200px" }}
               >
-                {projects.map((p) => (
+                {project.map((p) => (
                   <MenuItem key={p.projectId} value={p.projectId}>
                     {p.projectName}
                   </MenuItem>

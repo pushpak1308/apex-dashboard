@@ -15,7 +15,7 @@ import {
   ListItemText,
   IconButton,
 } from "@mui/material";
-import { DataGrid, GridToolbarContainer } from "@mui/x-data-grid";
+import { DataGrid } from "@mui/x-data-grid";
 import DownloadIcon from "@mui/icons-material/Download";
 import SearchIcon from "@mui/icons-material/Search";
 import EditIcon from "@mui/icons-material/Edit";
@@ -27,48 +27,35 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
-const CustomToolbar = ({ data, columns }) => {
-  const handleExport = () => {
-    const header = columns
+// Export CSV helper
+function exportCsv(data, columns) {
+  const header = columns
+    .filter((col) => !col.disableExport)
+    .map((col) => col.headerName)
+    .join(",");
+  const rows = data.map((row) =>
+    columns
       .filter((col) => !col.disableExport)
-      .map((col) => col.headerName)
-      .join(",");
-    const rows = data.map((row) =>
-      columns
-        .filter((col) => !col.disableExport)
-        .map((col) => {
-          let value = row[col.field];
-          if (value === undefined || value === null) return "";
-          const stringVal = typeof value === "string" ? value : String(value);
-          if (stringVal.includes(",") || stringVal.includes('"')) {
-            return `"${stringVal.replace(/"/g, '""')}"`;
-          }
-          return stringVal;
-        })
-        .join(",")
-    );
-    const csvContent = [header, ...rows].join("\n");
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "bills_export.csv";
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-  return (
-    <GridToolbarContainer sx={{ justifyContent: "flex-end", p: 1 }}>
-      <Button
-        variant="outlined"
-        size="small"
-        onClick={handleExport}
-        sx={{ color: "#1E3A8A", borderColor: "#1E3A8A", fontWeight: 600 }}
-      >
-        Export CSV
-      </Button>
-    </GridToolbarContainer>
+      .map((col) => {
+        let value = row[col.field];
+        if (value === undefined || value === null) return "";
+        const stringVal = typeof value === "string" ? value : String(value);
+        if (stringVal.includes(",") || stringVal.includes('"')) {
+          return `"${stringVal.replace(/"/g, '""')}"`;
+        }
+        return stringVal;
+      })
+      .join(",")
   );
-};
+  const csvContent = [header, ...rows].join("\n");
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "bills_export.csv";
+  a.click();
+  URL.revokeObjectURL(url);
+}
 
 const BillSection = () => {
   const [bills, setBills] = useState([]);
@@ -89,10 +76,12 @@ const BillSection = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get("https://apexconstruction.onrender.com/api/expenses/all").then((res) => {
-      setBills(res.data);
-      setFilteredBills(res.data);
-    });
+    axios
+      .get("https://apexconstruction.onrender.com/api/expenses/all")
+      .then((res) => {
+        setBills(res.data);
+        setFilteredBills(res.data);
+      });
     axios
       .get("https://apexconstruction.onrender.com/api/projects/all")
       .then((res) => setProjects(res.data));
@@ -195,7 +184,9 @@ const BillSection = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this expense?")) {
       try {
-        await axios.delete(`https://apexconstruction.onrender.com/api/expenses/delete/${id}`);
+        await axios.delete(
+          `https://apexconstruction.onrender.com/api/expenses/delete/${id}`
+        );
         alert("Expense deleted successfully ✅");
         setBills((prev) =>
           prev.filter((b) => b.expenseId !== id && b.id !== id)
@@ -380,7 +371,6 @@ const BillSection = () => {
             boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
           }}
         >
-          {/* HEADER */}
           <Typography
             variant="h4"
             sx={{ mb: 3, fontWeight: 700, color: "#1E3A8A" }}
@@ -416,7 +406,6 @@ const BillSection = () => {
               </Box>
             ))}
           </Card>
-          {/* FILTERS */}
           <Card
             elevation={0}
             sx={{
@@ -636,6 +625,36 @@ const BillSection = () => {
           {selectedProjects.length > 0 ? (
             categoryGroups.map((catGroup, idx) => (
               <Box key={idx} sx={{ mb: 4 }}>
+                <Box display="flex" justifyContent="flex-end" mb={1}>
+                  <Button
+                    variant="contained"
+                    size="medium"
+                    startIcon={<DownloadIcon />}
+                    onClick={() =>
+                      exportCsv(
+                        catGroup.items.map((b, i) => ({
+                          ...b,
+                          id: i + 1,
+                          projectName: b.project?.projectName || "",
+                          personName: b.person?.personName || "",
+                          categoryName: b.category?.categoryName || "",
+                          subcategoryName: b.subcategory?.subcategoryName || "",
+                          gstRequired: b.gstRequired,
+                        })),
+                        columns
+                      )
+                    }
+                    sx={{
+                      color: "#fff",
+                      backgroundColor: "#2563EB",
+                      fontWeight: 600,
+                      ml: 2,
+                      "&:hover": { backgroundColor: "#1E3A8A" },
+                    }}
+                  >
+                    Export CSV
+                  </Button>
+                </Box>
                 <Typography
                   variant="h5"
                   sx={{
@@ -682,23 +701,6 @@ const BillSection = () => {
                           },
                         }}
                         hideFooterSelectedRowCount
-                        components={{
-                          Toolbar: () => (
-                            <CustomToolbar
-                              data={catGroup.items.map((b, i) => ({
-                                ...b,
-                                id: i + 1,
-                                projectName: b.project?.projectName || "",
-                                personName: b.person?.personName || "",
-                                categoryName: b.category?.categoryName || "",
-                                subcategoryName:
-                                  b.subcategory?.subcategoryName || "",
-                                gstRequired: b.gstRequired,
-                              }))}
-                              columns={columns}
-                            />
-                          ),
-                        }}
                       />
                     </div>
                   </CardContent>
@@ -706,38 +708,55 @@ const BillSection = () => {
               </Box>
             ))
           ) : (
-            <Card
-              sx={{ borderRadius: 4, boxShadow: "0 8px 25px rgba(0,0,0,0.08)" }}
-            >
-              <CardContent>
-                <div style={{ height: 600, width: "100%" }}>
-                  <DataGrid
-                    rows={rows}
-                    columns={columns}
-                    pageSize={10}
-                    rowsPerPageOptions={[5, 10, 20]}
-                    sx={{
-                      border: "none",
-                      "& .MuiDataGrid-columnHeaders": {
-                        backgroundColor: "#E0E7FF",
-                        color: "#1E3A8A",
-                        fontWeight: "bold",
-                      },
-                      "& .MuiDataGrid-row:hover": {
-                        backgroundColor: "#F3F4F6",
-                        transform: "scale(1.01)",
-                        transition: "all 0.2s ease",
-                      },
-                    }}
-                    components={{
-                      Toolbar: () => (
-                        <CustomToolbar data={rows} columns={columns} />
-                      ),
-                    }}
-                  />
-                </div>
-              </CardContent>
-            </Card>
+            <>
+              <Box display="flex" justifyContent="flex-end" mb={1}>
+                <Button
+                  variant="contained"
+                  size="medium"
+                  startIcon={<DownloadIcon />}
+                  onClick={() => exportCsv(rows, columns)}
+                  sx={{
+                    color: "#fff",
+                    backgroundColor: "#2563EB",
+                    fontWeight: 600,
+                    ml: 2,
+                    "&:hover": { backgroundColor: "#1E3A8A" },
+                  }}
+                >
+                  Export CSV
+                </Button>
+              </Box>
+              <Card
+                sx={{
+                  borderRadius: 4,
+                  boxShadow: "0 8px 25px rgba(0,0,0,0.08)",
+                }}
+              >
+                <CardContent>
+                  <div style={{ height: 600, width: "100%" }}>
+                    <DataGrid
+                      rows={rows}
+                      columns={columns}
+                      pageSize={10}
+                      rowsPerPageOptions={[5, 10, 20]}
+                      sx={{
+                        border: "none",
+                        "& .MuiDataGrid-columnHeaders": {
+                          backgroundColor: "#E0E7FF",
+                          color: "#1E3A8A",
+                          fontWeight: "bold",
+                        },
+                        "& .MuiDataGrid-row:hover": {
+                          backgroundColor: "#F3F4F6",
+                          transform: "scale(1.01)",
+                          transition: "all 0.2s ease",
+                        },
+                      }}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+            </>
           )}
         </Box>
       </Box>
